@@ -1,0 +1,15 @@
+{
+  "name": "fsnd",
+  "version": "1.0.0",
+  "description": "This is the public repository for Udacity's Full-Stack Nanodegree program. Here, you can find starter-code the following projects:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^3.4.1"
+  }
+}

@@ -1,9 +1,21 @@
 from datetime import datetime
-from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SubmitField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms.widgets import TextArea
+from flask import render_template
+from phonenumbers import parse, is_valid_number
 
-class ShowForm(Form):
+def validate_phone_number(FlaskForm, field):
+    try:
+        parsed_number = parse(field.data, None)
+        if not is_valid_number(parsed_number):
+            raise ValueError('Invalid phone number')
+    except Exception as e:
+        raise ValueError('Invalid phone number')
+
+
+class ShowForm(FlaskForm):
     artist_id = StringField(
         'artist_id'
     )
@@ -16,7 +28,7 @@ class ShowForm(Form):
         default= datetime.today()
     )
 
-class VenueForm(Form):
+class VenueForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -89,8 +101,9 @@ class VenueForm(Form):
         'image_link'
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
-        'genres', validators=[DataRequired()],
+        'genres', validators=[DataRequired(), AnyOf(values=['Alternative', 'Blues', 'Classical','Country','Electronic','Folk',
+                                                            'Funk','Hip-Hop','Heavy Metal','Instrumental','Jazz','Musical Theatre','Pop',
+                                                            'Punk','R&B','Reggae', 'Rock n Roll','Soul','Other'])],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -127,8 +140,7 @@ class VenueForm(Form):
     )
 
 
-
-class ArtistForm(Form):
+class ArtistForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -191,9 +203,7 @@ class ArtistForm(Form):
             ('WY', 'WY'),
         ]
     )
-    phone = StringField(
-        # TODO implement validation logic for phone 
-        'phone'
+    phone = StringField('Phone Number', validators=[DataRequired(), validate_phone_number]
     )
     image_link = StringField(
         'image_link'
@@ -223,7 +233,6 @@ class ArtistForm(Form):
         ]
      )
     facebook_link = StringField(
-        # TODO implement enum restriction
         'facebook_link', validators=[URL()]
      )
 
